@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { AddToBag } from "@/components/add-to-bag";
 import { ProductCard } from "@/components/product-card";
 import { StockStatus } from "@/components/stock-status";
 import { formatPrice, getStockStatus } from "@/lib/catalog";
@@ -108,7 +109,11 @@ async function ProductDetails({
                   </Link>
                 </li>
                 <li aria-hidden="true">/</li>
-                <li aria-current="page">{product.category.name}</li>
+                <li>
+                  <Link href={`/${product.category.slug}`} className="link-reveal">
+                    {product.category.name}
+                  </Link>
+                </li>
               </ol>
             </nav>
 
@@ -122,15 +127,7 @@ async function ProductDetails({
 
             <StockStatus stock={product.stock} />
 
-            {soldOut ? (
-              <button type="button" className="btn btn-primary btn-block" disabled>
-                Sold Out
-              </button>
-            ) : (
-              <button type="button" className="btn btn-primary btn-block">
-                Add to Bag
-              </button>
-            )}
+            <AddToBag productId={product.id} soldOut={soldOut} />
 
             <p className="text-ink-muted">{product.description}</p>
 

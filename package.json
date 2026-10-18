@@ -6,13 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint && node scripts/check-admin-guards.mjs",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "auth:generate": "auth generate --config src/lib/auth.ts --output src/db/schema.ts",
+    "auth:make-admin": "tsx --env-file=.env.local src/db/make-admin.ts",
     "db:seed": "tsx --env-file=.env.local src/db/seed.ts"
   },
   "dependencies": {
@@ -21,7 +22,9 @@
     "drizzle-orm": "^0.45.4",
     "next": "16.4.2",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
+    "stripe": "^23.0.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
+
+import { getBagItemCount } from "@/lib/cart";
 
 const navigation = [
   { href: "/new", label: "New In" },
@@ -61,6 +64,12 @@ export function SiteHeader() {
                       </Link>
                     </li>
                   ))}
+                  {/* The account icon is hidden on small screens. */}
+                  <li className="hairline-t mt-2 pt-2 sm:hidden">
+                    <Link href="/account" className="text-label block py-3">
+                      Account
+                    </Link>
+                  </li>
                 </ul>
               </nav>
             </details>
@@ -94,13 +103,34 @@ export function SiteHeader() {
               <Icon path={icons.account} />
               <span className="sr-only">Account</span>
             </Link>
-            <Link href="/bag" className="btn-icon">
+            <Link href="/bag" className="btn-icon relative">
               <Icon path={icons.bag} />
               <span className="sr-only">Shopping bag</span>
+              {/* Reads the bag cookie, so it streams in; the header stays static. */}
+              <Suspense fallback={null}>
+                <BagCount />
+              </Suspense>
             </Link>
           </div>
         </div>
       </header>
+    </>
+  );
+}
+
+async function BagCount() {
+  const count = await getBagItemCount();
+  if (count === 0) return null;
+
+  return (
+    <>
+      <span
+        aria-hidden="true"
+        className="absolute top-1.5 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-ink px-1 text-[0.625rem] leading-none font-medium text-paper tabular-nums"
+      >
+        {count > 99 ? "99+" : count}
+      </span>
+      <span className="sr-only">, {count === 1 ? "1 item" : `${count} items`}</span>
     </>
   );
 }
